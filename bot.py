@@ -8,8 +8,7 @@ AT_TOKEN  = os.environ.get("AT_TOKEN", "patt88vFOyn3DUITo.ac69cdd48cba67c9b42ba3
 AT_BASE   = "apprOFBLKmXIeOmAu"
 AT_TABLE  = "tblHZaxddZMRuhxyu"
 SITE_URL  = "https://tomato-rosana-12.tiiny.site"
-
-print(f"AT_TOKEN starts with: {AT_TOKEN[:20]}...")
+ADMIN_ID  = 1657275993
 
 STEPS = [
     "عقد قرارداد","تایید اولیه مدارک","تکمیل مدارک",
@@ -40,10 +39,7 @@ def at_h():
 def get_all():
     try:
         r = requests.get(at_url(), headers=at_h(), timeout=10)
-        print(f"GET all status: {r.status_code}")
-        if r.status_code != 200:
-            print(f"GET all error: {r.text}")
-            return []
+        if r.status_code != 200: return []
         out = []
         for rec in r.json().get("records", []):
             f = rec["fields"]
@@ -56,7 +52,7 @@ def get_all():
             })
         return out
     except Exception as e:
-        print(f"get_all exception: {e}")
+        print(f"get_all error: {e}")
         return []
 
 def get_by_id(cid):
@@ -74,24 +70,20 @@ def add_client(name, phone, date, note=""):
             "startDate": date, "activeStep": 0,
             "note": note, "tgid": ""
         }}
-        print(f"Adding client: {data}")
         r = requests.post(at_url(), headers=at_h(), json=data, timeout=10)
-        print(f"Add status: {r.status_code}, response: {r.text[:200]}")
+        print(f"add status: {r.status_code} {r.text[:100]}")
         if r.status_code in [200,201]:
             return cid, r.json()["id"]
         return None, None
     except Exception as e:
-        print(f"add_client exception: {e}")
+        print(f"add error: {e}")
         return None, None
 
 def set_step(rid, step):
     try:
         r = requests.patch(at_url(rid), headers=at_h(), json={"fields":{"activeStep":step}}, timeout=10)
-        print(f"set_step status: {r.status_code}")
         return r.status_code in [200,201]
-    except Exception as e:
-        print(f"set_step exception: {e}")
-        return False
+    except: return False
 
 def set_tgid(rid, tgid):
     try:
@@ -105,21 +97,54 @@ def tg(method, data):
         print(f"tg error: {e}")
 
 def send(cid, text):
-    tg("sendMessage", {"chat_id":cid,"text":text,"parse_mode":"HTML"})
+    tg("sendMessage", {"chat_id":cid, "text":text, "parse_mode":"HTML"})
 
 def handle(msg):
     cid = msg["chat"]["id"]
     uid = msg["from"]["id"]
     txt = msg.get("text","").strip()
     st  = states.get(cid, {})
-    print(f"msg from {uid}: {txt}")
+    is_admin = (uid == ADMIN_ID)
 
-    if txt == "/start":
-        send(cid, "سلام به ربات مرکز علوم خوش اومدی 👋\n\n/add — مشتری جدید\n/list — لیست پرونده‌ها\n/next [کد] — مرحله بعد\n/find [کد] — جزئیات\n/myid — آیدی شما")
+    # ---- همه میتونن ----
+    if txt == "/myid":
+        send(cid, f"آیدی تلگرام شما:\n<code>{uid}</code>")
         return
 
-    if txt == "/myid":
-        send(cid, f"آیدی: <code>{uid}</code>")
+    # ---- فقط مشتری (غیر ادمین) ----
+    if not is_admin:
+        if txt.upper().startswith("MO-"):
+            c = get_by_id(txt.upper())
+            if c:
+                if str(uid) != c["tgid"]: set_tgid(c["rid"], uid)
+                p = round(((c["step"]+1)/len(STEPS))*100)
+                bar = "█"*(p//10) + "░"*(10-p//10)
+                t = f"سلام {c['name'].split()[0]} عزیز 👋\n\n"
+                t += f"📊 پیشرفت: {p}%  {bar}\n\n"
+                for i,s in enumerate(STEPS):
+                    if i < c["step"]: t += f"✅ {s}\n"
+                    elif i == c["step"]: t += f"🔵 {s}  ← الان اینجایی\n"
+                    else: t += f"⬜ {s}\n"
+                t += f"\n🔗 {SITE_URL}?track={c['id']}"
+                send(cid, t)
+            else:
+                send(cid, "کد پرونده اشتباهه.\nمثال: MO-001")
+        else:
+            send(cid, "سلام! کد پرونده‌ات رو بفرست تا وضعیتت رو ببینی.\nمثال: MO-001")
+        return
+
+    # ---- ادمین ----
+    if txt == "/start":
+        send(cid,
+            "سلام حسین! 👋\n\n"
+            "دستورات ادمین:\n"
+            "➕ /add — مشتری جدید\n"
+            "📋 /list — لیست پرونده‌ها\n"
+            "🔍 /find [کد] — جزئیات پرونده\n"
+            "⬆️ /next [کد] — مرحله بعد\n"
+            "📨 /sms [کد] — متن پیامک\n"
+            "🆔 /myid — آیدی شما"
+        )
         return
 
     if txt == "/list":
@@ -128,108 +153,110 @@ def handle(msg):
         t = "📋 <b>پرونده‌ها:</b>\n\n"
         for c in clients:
             p = round(((c["step"]+1)/len(STEPS))*100)
-            t += f"🔹 {c['id']} — {c['name']} — {p}%\n"
+            t += f"🔹 {c['id']} — {c['name']} — {p}% — {STEPS[c['step']]}\n"
         send(cid, t)
         return
 
     if txt.startswith("/find"):
         parts = txt.split()
-        if len(parts)<2: send(cid,"مثال: /find MO-001"); return
+        if len(parts) < 2: send(cid, "مثال: /find MO-001"); return
         c = get_by_id(parts[1])
-        if not c: send(cid,"پرونده یافت نشد."); return
+        if not c: send(cid, "پرونده یافت نشد."); return
         p = round(((c["step"]+1)/len(STEPS))*100)
-        t = f"📋 <b>{c['name']}</b>\n🔑 {c['id']}\n📱 {c['phone']}\n📅 {c['startDate']}\n📊 {p}%\n\n✅ مرحله: {STEPS[c['step']]}"
+        bar = "█"*(p//10)+"░"*(10-p//10)
+        t = f"📋 <b>{c['name']}</b>\n🔑 {c['id']}\n📱 {c['phone']}\n📅 {c['startDate']}\n\n"
+        t += f"📊 {p}%  {bar}\n\n"
+        for i,s in enumerate(STEPS):
+            if i < c["step"]: t += f"✅ {s}\n"
+            elif i == c["step"]: t += f"🔵 {s}  ← فعال\n"
+            else: t += f"⬜ {s}\n"
+        t += f"\n🔗 {SITE_URL}?track={c['id']}"
         send(cid, t)
         return
 
     if txt.startswith("/next"):
         parts = txt.split()
-        if len(parts)<2: send(cid,"مثال: /next MO-001"); return
+        if len(parts) < 2: send(cid, "مثال: /next MO-001"); return
         c = get_by_id(parts[1])
-        if not c: send(cid,"پرونده یافت نشد."); return
-        if c["step"]>=len(STEPS)-1: send(cid,"🎉 تکمیل شده!"); return
-        ns = c["step"]+1
-        if set_step(c["rid"],ns):
+        if not c: send(cid, "پرونده یافت نشد."); return
+        if c["step"] >= len(STEPS)-1: send(cid, "🎉 این پرونده تکمیل شده!"); return
+        ns = c["step"] + 1
+        if set_step(c["rid"], ns):
             send(cid, f"✅ {c['id']} — مرحله {ns+1}:\n<b>{STEPS[ns]}</b>")
             if c["tgid"]:
-                sms = SMS[ns].replace("{n}",c["name"].split()[0]).replace("{c}",c["id"])
+                sms = SMS[ns].replace("{n}", c["name"].split()[0]).replace("{c}", c["id"])
                 sms += f"\n\n🔗 {SITE_URL}?track={c['id']}"
                 send(c["tgid"], sms)
+                send(cid, "📨 پیام به مشتری ارسال شد.")
+            else:
+                send(cid, "⚠️ مشتری هنوز ربات رو استارت نزده.")
         else:
-            send(cid,"خطا در ذخیره.")
+            send(cid, "خطا در ذخیره.")
+        return
+
+    if txt.startswith("/sms"):
+        parts = txt.split()
+        if len(parts) < 2: send(cid, "مثال: /sms MO-001"); return
+        c = get_by_id(parts[1])
+        if not c: send(cid, "پرونده یافت نشد."); return
+        sms = SMS[c["step"]].replace("{n}", c["name"].split()[0]).replace("{c}", c["id"])
+        send(cid, f"متن پیامک:\n\n{sms}")
         return
 
     if txt == "/add":
-        states[cid] = {"s":"name"}
-        send(cid,"نام کامل مشتری:")
+        states[cid] = {"s": "name"}
+        send(cid, "نام کامل مشتری:")
         return
 
-    if st.get("s")=="name":
-        states[cid] = {"s":"phone","name":txt}
-        send(cid,f"✅ نام: {txt}\n\nموبایل:")
+    if st.get("s") == "name":
+        states[cid] = {"s": "phone", "name": txt}
+        send(cid, f"✅ نام: {txt}\n\nموبایل:")
         return
 
-    if st.get("s")=="phone":
-        states[cid]["phone"]=txt
-        states[cid]["s"]="date"
-        send(cid,f"✅ موبایل: {txt}\n\nتاریخ شروع:")
+    if st.get("s") == "phone":
+        states[cid]["phone"] = txt
+        states[cid]["s"] = "date"
+        send(cid, f"✅ موبایل: {txt}\n\nتاریخ شروع:")
         return
 
-    if st.get("s")=="date":
-        states[cid]["date"]=txt
-        states[cid]["s"]="confirm"
-        s=states[cid]
-        send(cid,f"تایید:\n👤 {s['name']}\n📱 {s['phone']}\n📅 {s['date']}\n\n/confirm ثبت\n/cancel لغو")
+    if st.get("s") == "date":
+        states[cid]["date"] = txt
+        states[cid]["s"] = "confirm"
+        s = states[cid]
+        send(cid, f"تایید:\n👤 {s['name']}\n📱 {s['phone']}\n📅 {s['date']}\n\n/confirm ثبت\n/cancel لغو")
         return
 
-    if txt=="/confirm" and st.get("s")=="confirm":
-        s=states.pop(cid)
-        cid_new,rid=add_client(s["name"],s["phone"],s["date"])
+    if txt == "/confirm" and st.get("s") == "confirm":
+        s = states.pop(cid)
+        cid_new, rid = add_client(s["name"], s["phone"], s["date"])
         if cid_new:
-            send(cid,f"✅ ثبت شد!\nکد: <b>{cid_new}</b>\n\nلینک مشتری:\n{SITE_URL}?track={cid_new}")
+            send(cid, f"✅ ثبت شد!\nکد: <b>{cid_new}</b>\n\nلینک مشتری:\n{SITE_URL}?track={cid_new}\n\nاین لینک رو به مشتری بفرست 👆")
         else:
-            send(cid,"خطا در ثبت. دوباره امتحان کن /add")
+            send(cid, "خطا در ثبت. /add دوباره امتحان کن.")
         return
 
-    if txt=="/cancel":
-        states.pop(cid,None)
-        send(cid,"لغو شد.")
+    if txt == "/cancel":
+        states.pop(cid, None)
+        send(cid, "لغو شد.")
         return
 
-    if txt.upper().startswith("MO-"):
-        c=get_by_id(txt.upper())
-        if c:
-            if str(uid)!=c["tgid"]: set_tgid(c["rid"],uid)
-            p=round(((c["step"]+1)/len(STEPS))*100)
-            bar="█"*(p//10)+"░"*(10-p//10)
-            t=f"سلام {c['name'].split()[0]} عزیز 👋\n\n📊 {p}%  {bar}\n\n"
-            for i,s in enumerate(STEPS):
-                if i<c["step"]: t+=f"✅ {s}\n"
-                elif i==c["step"]: t+=f"🔵 {s}  ← الان\n"
-                else: t+=f"⬜ {s}\n"
-            t+=f"\n🔗 {SITE_URL}?track={c['id']}"
-            send(cid,t)
-        else:
-            send(cid,"کد اشتباهه. مثال: MO-001")
-        return
-
-    send(cid,"دستور نامعتبر. /start برای راهنما")
+    send(cid, "دستور نامعتبر. /start برای راهنما")
 
 class H(BaseHTTPRequestHandler):
     def do_POST(self):
-        n=int(self.headers.get("Content-Length",0))
-        body=self.rfile.read(n)
+        n = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(n)
         try:
-            u=json.loads(body)
+            u = json.loads(body)
             if "message" in u: handle(u["message"])
         except Exception as e:
-            print(f"handler error: {e}")
+            print(f"error: {e}")
         self.send_response(200)
         self.end_headers()
         self.wfile.write(b"OK")
-    def log_message(self,*a): pass
+    def log_message(self, *a): pass
 
-if __name__=="__main__":
-    port=int(os.environ.get("PORT",8080))
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8080))
     print(f"Starting on port {port}")
-    HTTPServer(("0.0.0.0",port),H).serve_forever()
+    HTTPServer(("0.0.0.0", port), H).serve_forever()
