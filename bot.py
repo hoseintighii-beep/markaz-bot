@@ -12,16 +12,63 @@ SITE_URL  = "https://pink-verna-27.tiiny.site"
 ADMIN_ID  = 1657275993
 
 STEPS = [
-    "عقد قرارداد","تایید اولیه مدارک","تکمیل مدارک",
-    "تشکیل کارگروه تخصصی","تشکیل پرونده در اداره مهاجرت اسپانیا",
-    "سفر اول به اسپانیا","انجام امور اداری اسپانیا",
-    "بازگشت از سفر","صدور اقامت و کد ملی اسپانیایی"
+    "عقد قرارداد",
+    "تایید اولیه مدارک",
+    "تشکیل کارگروه تخصصی",
+    "تکمیل مدارک",
+    "تشکیل پرونده در اداره مهاجرت اسپانیا",
+    "سفر اول به اسپانیا",
+    "انجام امور اداری اسپانیا",
+    "بازگشت از سفر",
+    "صدور اقامت و کد ملی اسپانیایی"
 ]
+
+FAQ = {
+    0: [],  # عقد قرارداد
+    1: [
+        ("چه مدارکی برای اخذ اقامت مورد نیاز است؟",
+         "مدارک اصلی شامل هویتی (پاسپورت، شناسنامه)، مدارک مالی (گردش حساب ۳ ماهه)، مدارک شغلی (نامه اشتغال) و سند ازدواج است."),
+        ("آیا تمامی مدارک برای همراهان الزامی است؟",
+         "خیر، مدارک اصلی برای همراهان صرفاً مدارک هویتی بوده و مدرک دیگری لازم نیست."),
+        ("گردش حساب باید چگونه باشد؟",
+         "با توجه به شرایط فرد اقدام‌کننده و افراد همراه، این عدد توسط کارگروه اختصاصی به مشتری اعلام می‌گردد."),
+    ],
+    2: [
+        ("کارگروه تخصصی چیست؟",
+         "کارگروه تخصصی تیمی متشکل از مدیر قرارداد، مدیر اختصاصی اجرا، نماینده دفتر اسپانیا و مدیر بخش فروش است که مسئول ثبت پرونده شما در اداره مهاجرت هستند و در تمامی مراحل تا اخذ اقامت همراه شما هستند."),
+    ],
+    3: [
+        ("در صورت داشتن نواقص چه می‌شود؟",
+         "در صورت داشتن نواقص، با توجه به نوع نقص‌ها پرونده متوقف می‌شود تا بعد از تکمیل کامل مدارک روند ثبت پرونده انجام شود."),
+        ("آیا مدارک باید ترجمه رسمی شوند؟",
+         "بله، بیشتر مدارک غیر اسپانیایی باید توسط مترجم رسمی به اسپانیایی ترجمه شوند و باید مهر دادگستری و مهر وزارت امور خارجه را داشته باشند. کارگروه اختصاصی شما را راهنمایی می‌کند."),
+    ],
+    4: [
+        ("تاییدیه مدارک به چه معناست؟",
+         "پس از دریافت تمامی مدارک، مدارک برای تایید به وکیل اسپانیایی ارائه می‌شود تا با پایین آوردن احتمال ریسک، اقدام مطمئن شویم."),
+        ("تشکیل پرونده اقامتی چه طول می‌کشد؟",
+         "پس از تایید وکیل، مدارک جهت تشکیل پرونده به اداره مهاجرت ارائه می‌شود و پس از یک هفته شما آماده سفر به اسپانیا هستید."),
+    ],
+    5: [
+        ("تا چه زمانی وقت دارم تا به اسپانیا سفر کنم؟",
+         "پس از ثبت پرونده در اداره مهاجرت، به مدت ۶۰ روز حضور شما در خاک اسپانیا الزامی می‌باشد."),
+        ("در سفر اول به اسپانیا چه کارهایی باید انجام داد؟",
+         "در سفر اول امور اداری ضروری در اسپانیا انجام می‌پذیرد و حضور شما در دفتر اداره مهاجرت الزامی است. همکاران ما در اسپانیا در تمام مراحل همراه شما هستند."),
+        ("پس از بازگشت از سفر اول چقدر زمان لازم است؟",
+         "پس از حضور شما در خاک اسپانیا، حدود ۳۰ روز کاری زمان می‌برد تا نامه تایید اقامت صادر شود."),
+        ("می‌توانم در همان سفر اول در اسپانیا بمانم؟",
+         "بله، در صورتی که ویزای توریستی اجازه دهد مشکلی نیست. البته حضور فیزیکی دائم الزامی نمی‌باشد."),
+    ],
+    6: [],
+    7: [],
+    8: [],
+}
+
 SMS = [
     "سلام {n} عزیز 🙏\nقرارداد با مرکز علوم ثبت شد.\nکد پرونده: {c}\n— مرکز علوم",
     "سلام {n} جان 👋\nمدارک اولیه تایید شد.\n— مرکز علوم",
+    "سلام {n} عزیز 🎯\nپرونده وارد کارگروه تخصصی شد.\n— مرکز علوم",
     "سلام {n} عزیز 📋\nنوبت تکمیل مدارک رسیده.\n— مرکز علوم",
-    "سلام {n} 🎯\nپرونده وارد کارگروه تخصصی شد.\n— مرکز علوم",
     "سلام {n} 📁\nپرونده در اداره مهاجرت اسپانیا تشکیل شد!\n— مرکز علوم",
     "سلام {n} ✈️\nوقت سفر اول به اسپانیا رسید! سفر خوش 🙏\n— مرکز علوم",
     "سلام {n} 🏛️\nامور اداری اسپانیا شروع شده.\n— مرکز علوم",
@@ -95,8 +142,20 @@ def tg(method, data):
         requests.post(f"https://api.telegram.org/bot{BOT_TOKEN}/{method}", json=data, timeout=10)
     except: pass
 
-def send(cid, text):
-    tg("sendMessage", {"chat_id":cid, "text":text, "parse_mode":"HTML"})
+def send(cid, text, reply_markup=None):
+    d = {"chat_id":cid, "text":text, "parse_mode":"HTML"}
+    if reply_markup: d["reply_markup"] = reply_markup
+    tg("sendMessage", d)
+
+def send_faq(cid, step):
+    faqs = FAQ.get(step, [])
+    if not faqs:
+        send(cid, "❓ سوال متداولی برای این مرحله ثبت نشده.")
+        return
+    t = f"❓ <b>سوالات متداول — {STEPS[step]}:</b>\n\n"
+    for i, (q, a) in enumerate(faqs):
+        t += f"<b>س{i+1}: {q}</b>\n{a}\n\n"
+    send(cid, t)
 
 def handle(msg):
     cid = msg["chat"]["id"]
@@ -114,21 +173,30 @@ def handle(msg):
             c = get_by_id(txt.upper())
             if c:
                 if str(uid) != c["tgid"]: set_tgid(c["rid"], uid)
-                p = round(((c["step"]+1)/len(STEPS))*100)
+                step = c["step"]
+                p = round(((step+1)/len(STEPS))*100)
                 bar = "█"*(p//10)+"░"*(10-p//10)
-                t = f"سلام {c['name'].split()[0]} عزیز 👋\n\n📊 {p}%  {bar}\n\n"
+                t = f"سلام {c['name'].split()[0]} عزیز 👋\n\n"
+                t += f"📊 پیشرفت: {p}%  {bar}\n\n"
                 for i,s in enumerate(STEPS):
-                    if i < c["step"]: t += f"✅ {s}\n"
-                    elif i == c["step"]: t += f"🔵 {s}  ← الان\n"
+                    if i < step: t += f"✅ {s}\n"
+                    elif i == step: t += f"🔵 {s}  ← الان\n"
                     else: t += f"⬜ {s}\n"
                 t += f"\n🔗 {SITE_URL}?track={c['id']}"
-                send(cid, t)
+                kbd = None
+                if FAQ.get(step):
+                    kbd = {"inline_keyboard":[[{"text":"❓ سوالات متداول این مرحله","callback_data":f"faq_{step}"}]]}
+                send(cid, t, kbd)
             else:
                 send(cid, "کد اشتباهه. مثال: MO-001")
+        elif txt.startswith("faq_"):
+            step = int(txt.replace("faq_",""))
+            send_faq(cid, step)
         else:
             send(cid, "سلام! کد پرونده‌ات رو بفرست.\nمثال: MO-001")
         return
 
+    # ادمین
     if txt == "/start":
         send(cid, "سلام حسین! 👋\n\n/add — مشتری جدید\n/list — لیست پرونده‌ها\n/find [کد] — جزئیات\n/next [کد] — مرحله بعد\n/sms [کد] — متن پیامک")
         return
@@ -165,7 +233,10 @@ def handle(msg):
             if c["tgid"]:
                 sms = SMS[ns].replace("{n}",c["name"].split()[0]).replace("{c}",c["id"])
                 sms += f"\n\n🔗 {SITE_URL}?track={c['id']}"
-                send(c["tgid"], sms)
+                kbd = None
+                if FAQ.get(ns):
+                    kbd = {"inline_keyboard":[[{"text":"❓ سوالات متداول این مرحله","callback_data":f"faq_{ns}"}]]}
+                send(c["tgid"], sms, kbd)
                 send(cid,"📨 پیام ارسال شد.")
             else:
                 send(cid,"⚠️ مشتری هنوز ربات رو استارت نزده.")
@@ -222,12 +293,22 @@ def handle(msg):
     send(cid,"دستور نامعتبر. /start برای راهنما")
 
 
+def handle_callback(cb):
+    cid  = cb["message"]["chat"]["id"]
+    uid  = cb["from"]["id"]
+    data = cb.get("data","")
+    if data.startswith("faq_"):
+        step = int(data.replace("faq_",""))
+        send_faq(cid, step)
+    tg("answerCallbackQuery", {"callback_query_id": cb["id"]})
+
+
 def json_response(handler, data, status=200):
     body = json.dumps(data, ensure_ascii=False).encode("utf-8")
     handler.send_response(status)
-    handler.send_header("Content-Type", "application/json; charset=utf-8")
-    handler.send_header("Access-Control-Allow-Origin", "*")
-    handler.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    handler.send_header("Content-Type","application/json; charset=utf-8")
+    handler.send_header("Access-Control-Allow-Origin","*")
+    handler.send_header("Access-Control-Allow-Methods","GET, POST, OPTIONS")
     handler.send_header("Content-Length", str(len(body)))
     handler.end_headers()
     handler.wfile.write(body)
@@ -236,53 +317,56 @@ def json_response(handler, data, status=200):
 class H(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
         self.send_response(200)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Origin","*")
+        self.send_header("Access-Control-Allow-Methods","GET, POST, OPTIONS")
         self.end_headers()
 
     def do_GET(self):
         parsed = urlparse(self.path)
         params = parse_qs(parsed.query)
-        action = params.get("action", [""])[0]
-        cid    = params.get("id", [""])[0]
+        action = params.get("action",[""])[0]
+        cid    = params.get("id",[""])[0]
 
         if action == "getOne" and cid:
             c = get_by_id(cid)
             if c:
-                json_response(self, {"success": True, "client": {
-                    "id": c["id"], "name": c["name"],
-                    "phone": c["phone"], "startDate": c["startDate"],
-                    "activeStep": str(c["step"]), "note": c["note"]
-                }})
+                step = c["step"]
+                faqs = [{"q":q,"a":a} for q,a in FAQ.get(step,[])]
+                json_response(self, {"success":True, "client":{
+                    "id":c["id"], "name":c["name"], "phone":c["phone"],
+                    "startDate":c["startDate"], "activeStep":str(step),
+                    "note":c["note"]
+                }, "faqs": faqs, "stepName": STEPS[step]})
             else:
-                json_response(self, {"success": False, "error": "پرونده یافت نشد"})
+                json_response(self, {"success":False,"error":"پرونده یافت نشد"})
         elif action == "getAll":
             clients = get_all()
-            json_response(self, {"success": True, "clients": [
+            json_response(self, {"success":True, "clients":[
                 {"id":c["id"],"name":c["name"],"phone":c["phone"],
                  "startDate":c["startDate"],"activeStep":str(c["step"]),"note":c["note"]}
                 for c in clients
             ]})
         else:
-            json_response(self, {"success": True, "status": "ok"})
+            json_response(self, {"success":True,"status":"ok"})
 
     def do_POST(self):
-        n = int(self.headers.get("Content-Length", 0))
+        n = int(self.headers.get("Content-Length",0))
         body = self.rfile.read(n)
         try:
             u = json.loads(body)
             if "message" in u: handle(u["message"])
+            elif "callback_query" in u: handle_callback(u["callback_query"])
         except Exception as e:
             print(f"error: {e}")
         self.send_response(200)
-        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Origin","*")
         self.end_headers()
         self.wfile.write(b"OK")
 
-    def log_message(self, *a): pass
+    def log_message(self,*a): pass
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
+    port = int(os.environ.get("PORT",8080))
     print(f"Starting on port {port}")
-    HTTPServer(("0.0.0.0", port), H).serve_forever()
+    HTTPServer(("0.0.0.0",port),H).serve_forever()
