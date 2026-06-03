@@ -8,7 +8,7 @@ BOT_TOKEN = "8834769760:AAHskqhlOZ6lpymVyFg-H88uZmEUtZXFhMw"
 AT_TOKEN  = os.environ.get("AT_TOKEN", "patt88vFOyn3DUITo.ac69cdd48cba67c9b42ba3c9af296050912eaca07f82eb0191c058b2a7f58ba8")
 AT_BASE   = "apprOFBLKmXIeOmAu"
 AT_TABLE  = "tblHZaxddZMRuhxyu"
-SITE_URL  = "https://pink-verna-27.tiiny.site"
+SITE_URL  = "https://lime-masha-83.tiiny.site"
 ADMIN_ID  = 1657275993
 
 STEPS = [
